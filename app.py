@@ -4,6 +4,6 @@ app = flask.Flask(__name__)
 
 @app.route("/")
 def index():
-    return "Hello World!", 201
+    return flask.render_template("index.html", name="Flinn")
 
 app.run()

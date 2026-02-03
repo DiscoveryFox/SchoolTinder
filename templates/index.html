@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Willkommen - SchoolTinder</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Willkommen bei SchoolTinder, {{ name }}!</h1>
+</header>
+{% endblock %}
