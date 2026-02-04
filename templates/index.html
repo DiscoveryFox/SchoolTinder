@@ -9,4 +9,17 @@
 <header>
     <h1>Willkommen bei SchoolTinder, {{ name }}!</h1>
 </header>
+
+<script type="module">
+    import { MatchClient } from "/static/js/index.js";
+    const client = new MatchClient()
+
+    const match = await client.getNextMatch();
+    console.log(match)
+
+    const feedback = await client.updateMatch('3', 'denial')
+    console.log(feedback)
+
+</script>
 {% endblock %}
+
