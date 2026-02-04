@@ -38,7 +38,7 @@ echo -e "${YELLOW}Setting up branch protection for ${BRANCH} branch...${NC}"
 # Branch protection configuration
 PROTECTION_CONFIG='{
   "required_status_checks": null,
-  "enforce_admins": false,
+  "enforce_admins": true,
   "required_pull_request_reviews": {
     "dismissal_restrictions": {},
     "dismiss_stale_reviews": false,

@@ -16,7 +16,8 @@ The following settings must be configured for the `main` branch:
    - Only administrators can approve and merge pull requests to the main branch
 
 3. **Do not allow bypassing the above settings**
-   - Enforce all configured restrictions for administrators: **Enabled** (optional but recommended)
+   - Enforce all configured restrictions for administrators: **Enabled**
+   - This ensures that even administrators must follow the pull request review process
 
 4. **Additional recommended settings**:
    - Require status checks to pass before merging (if CI/CD is configured)
