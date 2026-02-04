@@ -1,0 +1,21 @@
+name: Branch Protection Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Branch Protection
+        run: |
+          echo "✓ This pull request is targeting the main branch"
+          echo "✓ Branch protection rules should be configured to require:"
+          echo "  - Pull request reviews before merging"
+          echo "  - At least 1 approval from an administrator"
+          echo "  - No direct pushes to main"
+          echo ""
+          echo "If you are a repository administrator, please ensure these rules are configured."
+          echo "See .github/BRANCH_PROTECTION.md for detailed instructions."
