@@ -12,8 +12,10 @@ The following settings must be configured for the `main` branch:
    - Dismiss stale pull request approvals when new commits are pushed: Optional
    - Require review from Code Owners: Optional
 
-2. **Require administrator approval**
-   - Only administrators can approve and merge pull requests to the main branch
+2. **Require pull request approval before merging**
+   - At least 1 approval from users with write access is required
+   - In most cases, repository administrators are the ones with write access
+   - For stricter control, consider using CODEOWNERS to specify required reviewers
 
 3. **Do not allow bypassing the above settings**
    - Enforce all configured restrictions for administrators: **Enabled**
@@ -64,5 +66,6 @@ Once configured, you can verify by:
 ## Notes
 
 - These settings ensure that all changes to the `main` branch go through a pull request review process
-- At least one administrator must approve changes before they can be merged
+- At least one user with write access must approve changes before they can be merged
 - This helps maintain code quality and prevents accidental direct pushes to the main branch
+- For stricter control where only specific users can approve, create a `.github/CODEOWNERS` file and enable "Require review from Code Owners" in the branch protection settings

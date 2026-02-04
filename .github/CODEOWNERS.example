@@ -1,0 +1,20 @@
+# CODEOWNERS - Specify who can approve changes to specific files/directories
+#
+# This file defines code owners for different parts of the repository.
+# When "Require review from Code Owners" is enabled in branch protection,
+# at least one code owner must approve the pull request.
+#
+# Syntax:
+# pattern email/username
+#
+# Examples:
+# * @username              - User must review all files
+# *.py @python-team        - Python team must review Python files
+# /docs/ @documentation    - Documentation team must review docs
+
+# Default owner for everything in the repo
+# Uncomment and replace with actual GitHub username(s)
+# * @repository-admin
+
+# Example: Require specific users to review all changes
+# * @DiscoveryFox
