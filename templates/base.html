@@ -8,7 +8,11 @@
     {% endblock %}
 </head>
 <body>
+    <div class="card-container" id='cardContainer'>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     {% block content %}
+
     {% endblock %}
 </body>
 </html>
