@@ -11,6 +11,10 @@ app.db = orm.Database("schooltinder.db")
 def index():
     return flask.render_template("index.html", name="Flinn")
 
+@app.route("/tinder", methods=["GET"])
+def tinder():
+    return flask.render_template("tinder-test.html", name="Flinn")
+
 @app.route("/match", methods=["GET"])
 def get_next_match():
     match = {
