@@ -1,8 +1,11 @@
 import flask
 from flask import request, jsonify
 from flask_login import current_user
+import tools.orm as orm
 
 app = flask.Flask(__name__)
+
+app.db = orm.Database("schooltinder.db")
 
 @app.route("/")
 def index():

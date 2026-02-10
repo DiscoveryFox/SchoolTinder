@@ -5,15 +5,6 @@ class User:
     pass
 
 @dataclass
-class Profile:
-    user_id: uuid.UUID 
-    first_name: str
-    last_name: str
-    age: int
-    preferences: Preference
-
-
-@dataclass
 class Preference:
     age: tuple[int, int]
     lookalike_age: tuple[int, int]
@@ -26,4 +17,14 @@ class Preference:
     drinking: bool # TODO: Change to literal or class
     pets: list[str] # TODO: Change to literal or class
     relationship_type: str # TODO: Change to literal or class
+
+
+@dataclass
+class Profile:
+    user_id: uuid.UUID 
+    first_name: str
+    last_name: str
+    age: int
+    preferences: Preference
+
 
