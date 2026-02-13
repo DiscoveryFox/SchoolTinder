@@ -6,4 +6,6 @@ print("test")
 
 db.initialize_database()
 
+main = tools.orm.Profile
+
 print("test2")
