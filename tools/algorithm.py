@@ -11,6 +11,11 @@ class Algorithm:
 
     def find_match_multiple(profile: models.Profile | str) -> list[models.Profile]:
         pass
+    
+    def hash_erstellen(profile: models.Profile | str):
+        BucketList = []
+        
+
 
     def regenerate_preferences(profile: models.Profile | str) -> None:
         """
