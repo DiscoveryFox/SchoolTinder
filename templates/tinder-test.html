@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Willkommen - SchoolTinder</title>
+<style>
+    body {
+        background: #f5f5f5;
+        font-family: system-ui, sans-serif;
+    }
+
+    header {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .card-container {
+        height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .card {
+        width: 320px;
+        height: 480px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        overflow: hidden;
+        position: absolute;
+        cursor: grab;
+        transition: transform 0.3s ease;
+        user-select: none;
+    }
+
+    .card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+    }
+
+    .card-name {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 16px;
+        color: white;
+        font-size: 22px;
+        font-weight: bold;
+        background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<header>
+    <h1>Willkommen bei SchoolTinder, {{ name }}!</h1>
+</header>
+
+<div class="card-container">
+    <div class="card" id="card">
+        <img src="https://picsum.photos/400/550" alt="Example Match">
+        <div class="card-name">Max Mustermann</div>
+    </div>
+</div>
+
+<script type="module">
+    // Optional: dein MatchClient
+    // import { MatchClient } from "/static/js/index.js";
+    // const client = new MatchClient();
+
+    const card = document.getElementById("card");
+
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    card.addEventListener("mousedown", startDrag);
+    card.addEventListener("touchstart", startDrag);
+
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("touchmove", drag);
+
+    document.addEventListener("mouseup", endDrag);
+    document.addEventListener("touchend", endDrag);
+
+    function startDrag(e) {
+        isDragging = true;
+        startX = e.type.includes("mouse")
+            ? e.clientX
+            : e.touches[0].clientX;
+        card.style.transition = "none";
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+
+        currentX = e.type.includes("mouse")
+            ? e.clientX
+            : e.touches[0].clientX;
+
+        const deltaX = currentX - startX;
+        const rotate = deltaX * 0.05;
+
+        card.style.transform = `translateX(${deltaX}px) rotate(${rotate}deg)`;
+    }
+
+    function endDrag() {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const deltaX = currentX - startX;
+        card.style.transition = "transform 0.3s ease";
+
+        if (deltaX > 120) {
+            swipeRight();
+        } else if (deltaX < -120) {
+            swipeLeft();
+        } else {
+            card.style.transform = "translateX(0) rotate(0)";
+        }
+    }
+
+    function swipeRight() {
+        card.style.transform = "translateX(1000px) rotate(20deg)";
+        console.log("Liked");
+        // client.updateMatch(id, "like");
+    }
+
+    function swipeLeft() {
+        card.style.transform = "translateX(-1000px) rotate(-20deg)";
+        console.log("Denied");
+        // client.updateMatch(id, "denial");
+    }
+</script>
+{% endblock %}

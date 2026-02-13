@@ -1,30 +1,47 @@
 from dataclasses import dataclass
-import uuid
+from typing import Optional
 
-class User:
-    pass
 
 @dataclass
-class Preference:
-    age: tuple[int, int]
-    lookalike_age: tuple[int, int]
-    objective_attractiveness: float
-    gender: str
-    body_type: str # TODO: Change to literal or class
-    hobbies: list[str] # TODO: Change to literal or class
-    music_taste: list[str] # TODO: Change to literal or class
-    smoking: bool # TODO: Change to literal or class
-    drinking: bool # TODO: Change to literal or class
-    pets: list[str] # TODO: Change to literal or class
-    relationship_type: str # TODO: Change to literal or class
+class User:
+    user_id: Optional[int]
+    username: str
+    email: str
+    password: str
 
 
 @dataclass
 class Profile:
-    user_id: uuid.UUID 
+    profile_id: Optional[int]
+    user_id: int
     first_name: str
     last_name: str
-    age: int
-    preferences: Preference
+    date_of_birth: int
+    gender: int
+    home_address: str
+    hair_colour: str
+
+
+@dataclass
+class Picture:
+    picture_id: Optional[int]
+    profile_id: int
+    path: str
+
+
+@dataclass
+class Preference:
+    preference_id: Optional[int]
+    profile_id: int
+    lower_age_bound: int
+    upper_age_bound: int
+    sexual_preference: Optional[int]
+
+
+@dataclass
+class Hobby:
+    hobby_id: Optional[int]
+    profile_id: int
+    hobby_name: Optional[str]
 
 
