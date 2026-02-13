@@ -133,10 +133,10 @@ class _OrmBase:
             )
             conn.commit()
             new_id = cursor.lastrowid
-        return cls.get_by_id(db_path, new_id)
+        return cls.get_by_id(new_id, db_path)
 
     @classmethod
-    def get_by_id(cls, db_path: Optional[str] = None, record_id: int = 0) -> Optional["_OrmBase"]:
+    def get_by_id(cls, record_id: int, db_path: Optional[str] = None) -> Optional["_OrmBase"]:
         db_path = cls._resolve_db_path(db_path)
         with cls._connect(db_path) as conn:
             cursor = conn.execute(
@@ -167,13 +167,19 @@ class _OrmBase:
         return [cls._row_to_instance(db_path, row) for row in rows]
 
     @classmethod
+    def get_all(
+        cls, limit: Optional[int] = None, offset: Optional[int] = None
+    ) -> list["_OrmBase"]:
+        return cls.list_all(limit=limit, offset=offset)
+
+    @classmethod
     def update_by_id(
-        cls, db_path: Optional[str] = None, record_id: int = 0, **fields: Any
+        cls, record_id: int, db_path: Optional[str] = None, **fields: Any
     ) -> Optional["_OrmBase"]:
         db_path = cls._resolve_db_path(db_path)
         clean_fields = cls._filter_fields(fields)
         if not clean_fields:
-            return cls.get_by_id(db_path, record_id)
+            return cls.get_by_id(record_id, db_path)
         assignments = ", ".join([f"{name} = ?" for name in clean_fields])
         values = list(clean_fields.values()) + [record_id]
         with cls._connect(db_path) as conn:
@@ -182,10 +188,10 @@ class _OrmBase:
                 values,
             )
             conn.commit()
-        return cls.get_by_id(db_path, record_id)
+        return cls.get_by_id(record_id, db_path)
 
     @classmethod
-    def delete_by_id(cls, db_path: Optional[str] = None, record_id: int = 0) -> bool:
+    def delete_by_id(cls, record_id: int, db_path: Optional[str] = None) -> bool:
         db_path = cls._resolve_db_path(db_path)
         with cls._connect(db_path) as conn:
             cursor = conn.execute(
@@ -216,7 +222,7 @@ class _OrmBase:
         record_id = getattr(self, self.pk_field)
         if record_id is None:
             return None
-        fresh = self.__class__.get_by_id(self.db_path, record_id)
+        fresh = self.__class__.get_by_id(record_id, self.db_path)
         if fresh is None:
             return None
         self._update_from_instance(fresh)
@@ -229,7 +235,7 @@ class _OrmBase:
         record_id = getattr(self, self.pk_field)
         if record_id is None:
             return None
-        updated = self.__class__.update_by_id(self.db_path, record_id, **fields)
+        updated = self.__class__.update_by_id(record_id, self.db_path, **fields)
         if updated is None:
             return None
         self._update_from_instance(updated)
@@ -239,13 +245,13 @@ class _OrmBase:
         record_id = getattr(self, self.pk_field)
         if record_id is None:
             return False
-        return self.__class__.delete_by_id(self.db_path, record_id)
+        return self.__class__.delete_by_id(record_id, self.db_path)
 
     def save(self) -> Optional["_OrmBase"]:
         record_id = getattr(self, self.pk_field)
         if record_id is None:
             return self.create_instance()
-        updated = self.__class__.update_by_id(self.db_path, record_id, **self._as_fields())
+        updated = self.__class__.update_by_id(record_id, self.db_path, **self._as_fields())
         if updated is None:
             return None
         self._update_from_instance(updated)
@@ -324,12 +330,44 @@ class Profile(_OrmBase):
     ]
     model_cls = models.Profile
 
+    @property
+    def preference(self) -> Optional["Preference"]:
+        profile_id = getattr(self, self.pk_field)
+        if profile_id is None:
+            return None
+        return Preference.get_by_profile_id(profile_id)
+
+    @property
+    def hobbies(self) -> list["Hobby"]:
+        profile_id = getattr(self, self.pk_field)
+        if profile_id is None:
+            return []
+        return Hobby.list_by_profile_id(profile_id)
+
+    @property
+    def pictures(self) -> list["Picture"]:
+        profile_id = getattr(self, self.pk_field)
+        if profile_id is None:
+            return []
+        return Picture.list_by_profile_id(profile_id)
+
 
 class Picture(_OrmBase):
     table = "Pictures"
     pk_field = "picture_id"
     columns = ["profile_id", "path"]
     model_cls = models.Picture
+
+    @classmethod
+    def list_by_profile_id(cls, profile_id: int) -> list["Picture"]:
+        db_path = cls._resolve_db_path(None)
+        with cls._connect(db_path) as conn:
+            cursor = conn.execute(
+                f"SELECT * FROM {cls.table} WHERE profile_id = ?",
+                (profile_id,),
+            )
+            rows = cursor.fetchall()
+        return [cls._row_to_instance(db_path, row) for row in rows]
 
 
 class Preference(_OrmBase):
@@ -338,9 +376,33 @@ class Preference(_OrmBase):
     columns = ["profile_id", "lower_age_bound", "upper_age_bound", "sexual_preference"]
     model_cls = models.Preference
 
+    @classmethod
+    def get_by_profile_id(cls, profile_id: int) -> Optional["Preference"]:
+        db_path = cls._resolve_db_path(None)
+        with cls._connect(db_path) as conn:
+            cursor = conn.execute(
+                f"SELECT * FROM {cls.table} WHERE profile_id = ?",
+                (profile_id,),
+            )
+            row = cursor.fetchone()
+        if row is None:
+            return None
+        return cls._row_to_instance(db_path, row)
+
 
 class Hobby(_OrmBase):
     table = "Hobby"
     pk_field = "hobby_id"
     columns = ["profile_id", "hobby_name"]
     model_cls = models.Hobby
+
+    @classmethod
+    def list_by_profile_id(cls, profile_id: int) -> list["Hobby"]:
+        db_path = cls._resolve_db_path(None)
+        with cls._connect(db_path) as conn:
+            cursor = conn.execute(
+                f"SELECT * FROM {cls.table} WHERE profile_id = ?",
+                (profile_id,),
+            )
+            rows = cursor.fetchall()
+        return [cls._row_to_instance(db_path, row) for row in rows]

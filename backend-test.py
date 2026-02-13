@@ -6,6 +6,7 @@ print("test")
 
 db.initialize_database()
 
-main = tools.orm.Profile
+profile_one = tools.orm.Profile.get_by_id(1)
+preference_one = tools.orm.Preference.get_by_id
 
-print("test2")
+print(profile_one.to_model())
