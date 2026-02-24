@@ -8,15 +8,6 @@ class User:
     user_id:uuid.UUID
 
 
-
-@dataclass
-class User:
-    user_id: Optional[int]
-    username: str
-    email: str
-    password: str
-
-
 @dataclass
 class Profile:
     profile_id: Optional[int]
@@ -27,7 +18,7 @@ class Profile:
     lookalike_age:int,
     objective_attractiveness:float,
     gender:str
-    hobbies:list[str] # TODO: Change to literal or class
+    hobbies:list[Hobby]
     music_taste:list[str] # TODO: Change to literal or class
     smoking:bool
     drinking:bool
@@ -61,5 +52,10 @@ class Hobby:
     hobby_id: Optional[int]
     profile_id: int
     hobby_name: Optional[str]
+
+@dataclass
+class Pet:
+    pet_id:Optional[int]
+    pet_name:str
 
 
